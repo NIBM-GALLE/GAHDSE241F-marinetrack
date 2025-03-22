@@ -23,3 +23,21 @@ The **Harbor Management System** is a web and mobile application designed to sim
 | **Backend (Web)**  | NodeJs  |
 | **Backend (Mobile)**  | Kotlin |
 | **Database**  | Firebase |
+
+# 📦 Installation & Setup
+
+### 📱 Mobile Application Setup
+ 1. Clone the repository
+ 2. Sync Gradle
+ 3. Install dependencies
+ 4. Run the app on an emulator
+
+# 📲 Mobile Application Usage
+- 🔑  Signup & Login to system
+- 🏷  Request Registration Online
+- 📝  Register a New Boat
+- 💳  Make Online Payments
+- 🔍  Manage Your Boats
+- 🔄  Renew Boat Registration
+- 🚨  Receive Status Updates & Alerts
+
