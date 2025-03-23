@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -92,6 +91,20 @@
             android:layout_gravity="center"
             android:shape="rectangle"
             android:cornerRadius="30dp" />
+
+        <!-- Text for "Don't have an account?" -->
+        <TextView
+            android:id="@+id/textViewRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Don't have an account? Register here"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:layout_marginTop="15dp"
+            android:layout_gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+           />
 
     </LinearLayout>
 
