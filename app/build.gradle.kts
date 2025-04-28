@@ -47,6 +47,7 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation ("androidx.recyclerview:recyclerview:1.2.1")
     implementation ("com.google.android.material:material:1.3.0")
+    implementation(libs.firebase.firestore.ktx)
 
     //implementation(libs.firebase.firestore.ktx)
     //implementation(libs.firebase.storage.ktx)
