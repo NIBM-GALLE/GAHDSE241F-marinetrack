@@ -10,10 +10,15 @@
       "client_info": {
         "mobilesdk_app_id": "1:866850090007:android:0d7dcc29070c4c150a8052",
         "android_client_info": {
-          "package_name": "com.example.marinetrack"
+          "package_name": "com.example.final2"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "866850090007-q1f9870fdg15uerkc1mkhb6s8490rupf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyB58MVl3nekFn6oaPnJqEIvqMbhr2ONi_8"
@@ -21,18 +26,28 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "866850090007-q1f9870fdg15uerkc1mkhb6s8490rupf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:866850090007:android:31f24627161f7bb80a8052",
+        "mobilesdk_app_id": "1:866850090007:android:9a7e1c09c67eadcb0a8052",
         "android_client_info": {
           "package_name": "com.example.marinetrack"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "866850090007-q1f9870fdg15uerkc1mkhb6s8490rupf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyB58MVl3nekFn6oaPnJqEIvqMbhr2ONi_8"
@@ -40,7 +55,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "866850090007-q1f9870fdg15uerkc1mkhb6s8490rupf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
