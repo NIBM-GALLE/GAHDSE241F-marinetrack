@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,8 +16,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Marinetrack"
         tools:targetApi="31">
+
+
         <activity
-            android:name=".Select_payment_method"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,6 +27,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".LoginActivity"></activity>
+
+        <activity android:name=".RegisterActivity"></activity>
+        <activity android:name=".DashboardActivity" ></activity>
+        <activity android:name=".BoatRegisterActivity" ></activity>
+        <activity android:name=".FishermenRegisterActivity" ></activity>
+        <activity android:name=".BoatListActivity" ></activity>
+        <activity android:name=".BoatDetailsActivity" ></activity>
+        <activity android:name=".DepartureActivity" ></activity>
+
+
     </application>
 
 </manifest>
