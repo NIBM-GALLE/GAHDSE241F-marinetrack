@@ -1,98 +1,93 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/img"
-    tools:context=".MainActivity"
+    android:background="@drawable/background_image"
     tools:ignore="MissingClass">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center"
-        android:padding="30dp">
+        android:padding="30dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Logo -->
         <ImageView
             android:id="@+id/imageView2"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_gravity="center"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
             android:layout_marginBottom="40dp"
-            app:srcCompat="@drawable/logo_pic" />
+            android:contentDescription="App Logo"
+            android:scaleType="centerCrop"
+            android:src="@drawable/logo"
+            android:clipToOutline="true" />
 
-        <!-- Email Input -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:boxBackgroundMode="filled"
-            android:boxCornerRadiusTopStart="30dp"
-            android:boxCornerRadiusTopEnd="30dp"
-            android:boxCornerRadiusBottomStart="30dp"
-            android:boxCornerRadiusBottomEnd="30dp"
-            android:boxStrokeColor="@android:color/transparent"
-            android:boxBackgroundColor="#ECECEC"
-            android:layout_marginBottom="15dp">
+            android:hint="Enter Your Email"
+            app:boxBackgroundMode="filled"
+            app:boxStrokeColor="@android:color/transparent"
+            app:boxBackgroundColor="#ECECEC"
+            android:layout_marginBottom="15dp"
+            app:boxCornerRadiusTopStart="30dp"
+            app:boxCornerRadiusTopEnd="30dp"
+            app:boxCornerRadiusBottomStart="30dp"
+            app:boxCornerRadiusBottomEnd="30dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextTextEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#FFFFFF"
-                android:hint="Enter Your Email"
                 android:inputType="textEmailAddress"
-                android:padding="12dp"
                 android:textColor="@android:color/black"
                 android:textColorHint="#808080"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:padding="12dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Password Input -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:boxBackgroundMode="filled"
-            android:boxCornerRadiusTopStart="30dp"
-            android:boxCornerRadiusTopEnd="30dp"
-            android:boxCornerRadiusBottomStart="30dp"
-            android:boxCornerRadiusBottomEnd="30dp"
-            android:boxStrokeColor="@android:color/transparent"
-            android:boxBackgroundColor="#ECECEC"
-            android:layout_marginBottom="30dp">
+            android:hint="Enter Your Password"
+            app:boxBackgroundMode="filled"
+            app:boxStrokeColor="@android:color/transparent"
+            app:boxBackgroundColor="#ECECEC"
+            android:layout_marginBottom="30dp"
+            app:boxCornerRadiusTopStart="30dp"
+            app:boxCornerRadiusTopEnd="30dp"
+            app:boxCornerRadiusBottomStart="30dp"
+            app:boxCornerRadiusBottomEnd="30dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextTextPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#FFFFFF"
-                android:hint="Enter Your Password"
                 android:inputType="textPassword"
-                android:padding="12dp"
                 android:textColor="@android:color/black"
                 android:textColorHint="#808080"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:padding="12dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Login Button -->
         <Button
             android:id="@+id/buttonLogin"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="#F28C1F"
             android:text="Login"
             android:textColor="@android:color/black"
+            app:backgroundTint="#F28C1F"
             android:textStyle="bold"
-            android:textSize="18sp"
+            android:textSize="23sp"
             android:padding="12dp"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:shape="rectangle"
-            android:cornerRadius="30dp" />
+            android:layout_marginTop="10dp" />
 
-        <!-- Text for "Don't have an account?" -->
         <TextView
             android:id="@+id/textViewRegister"
             android:layout_width="wrap_content"
@@ -101,11 +96,9 @@
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:layout_marginTop="15dp"
-            android:layout_gravity="center"
+            android:autoLink="web"
+            android:linksClickable="true"
             android:clickable="true"
-            android:focusable="true"
-           />
-
+            android:focusable="true" />
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
