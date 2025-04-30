@@ -41,7 +41,7 @@ class DashboardActivity : AppCompatActivity() {
 
         val fishermenButton: Button = findViewById(R.id.fishermenregister)
         fishermenButton.setOnClickListener {
-            val intent = Intent(this, FishermenRegisterActivity::class.java)
+            val intent = Intent(this, FishermanRegistrationActivity::class.java)
             startActivity(intent)
         }
 

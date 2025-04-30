@@ -6,7 +6,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.final2.databinding.ActivityBoatlistBinding
+import com.example.marinetrack.databinding.ActivityBoatlistBinding
 import com.google.firebase.firestore.FirebaseFirestore
 
 class BoatListActivity : AppCompatActivity() {
