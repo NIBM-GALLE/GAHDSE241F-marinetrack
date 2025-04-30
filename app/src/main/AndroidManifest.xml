@@ -33,7 +33,7 @@
         <activity android:name=".RegisterActivity"></activity>
         <activity android:name=".DashboardActivity" ></activity>
         <activity android:name=".BoatRegisterActivity" ></activity>
-        <activity android:name=".FishermenRegisterActivity" ></activity>
+        <activity android:name=".FishermanRegistrationActivity" ></activity>
         <activity android:name=".BoatListActivity" ></activity>
         <activity android:name=".BoatDetailsActivity" ></activity>
         <activity android:name=".DepartureActivity" ></activity>
