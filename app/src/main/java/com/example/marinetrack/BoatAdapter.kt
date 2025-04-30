@@ -4,7 +4,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.final2.databinding.BoatCardBinding
+import com.example.marinetrack.databinding.BoatCardBinding
 
 class BoatAdapter(private val boatList: List<Boat>) :
     RecyclerView.Adapter<BoatAdapter.BoatViewHolder>() {
