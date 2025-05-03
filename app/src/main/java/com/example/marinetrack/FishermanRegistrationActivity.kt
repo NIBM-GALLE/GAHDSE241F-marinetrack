@@ -48,6 +48,7 @@ class FishermanRegistrationActivity : AppCompatActivity() {
         val uploadImageButton: Button = findViewById(R.id.btnAddImage)
         val uploadDocumentButton: Button = findViewById(R.id.btnUploadDocument)
 
+        val ownernicEditText: EditText = findViewById(R.id.editTextTextNIC)
         val nameEditText: EditText = findViewById(R.id.fishermenname)
         val nicEditText: EditText = findViewById(R.id.fishermenNIC)
         val contactEditText: EditText = findViewById(R.id.editTextTextContactNumber)
@@ -55,7 +56,7 @@ class FishermanRegistrationActivity : AppCompatActivity() {
         val addressEditText: EditText = findViewById(R.id.address)
         val boatIdEditText: EditText = findViewById(R.id.boatid)
 
-        nicEditText.setText(userNic)
+        ownernicEditText.setText(userNic)
         emailEditText.setText(userEmail)
 
         val imagePicker = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
