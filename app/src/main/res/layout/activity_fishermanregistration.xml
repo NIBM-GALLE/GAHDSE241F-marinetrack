@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_image"
     android:orientation="vertical"
-    tools:context=".FishermenRegisterActivity">
+    tools:context=".FishermanRegistrationActivity">
 
 
     <com.google.android.material.appbar.AppBarLayout
@@ -222,6 +222,44 @@
                     android:textColorHint="@color/black"
                     android:textSize="16sp"/>
             </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Button to Add NIC Image -->
+
+            <!-- Button to Upload Health Document -->
+            <!-- Button to Add Image -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:weightSum="2">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAddImage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:text="Add NIC Image"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:backgroundTint="#F28C1F"
+                    android:padding="12dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnUploadDocument"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:text="Health Document"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:backgroundTint="#F28C1F"
+                    android:padding="12dp" />
+            </LinearLayout>
+
 
 
 
