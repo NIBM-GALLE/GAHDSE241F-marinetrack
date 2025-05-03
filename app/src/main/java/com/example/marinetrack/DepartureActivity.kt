@@ -1,8 +1,8 @@
 package com.example.marinetrack
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -14,9 +14,10 @@ import java.util.*
 class DepartureActivity : AppCompatActivity() {
 
     private lateinit var db: FirebaseFirestore
-    private lateinit var spinner: Spinner
-    private val fishermenList = mutableListOf<String>()
-    private var nicOfLoggedInUser = "2002"
+    private var userNIC: String? = null
+    private lateinit var fishermenMultiSelect: TextView
+    private lateinit var selectedFishermenNames: MutableList<String>
+    private var fishermenNames: MutableList<String> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,120 +25,138 @@ class DepartureActivity : AppCompatActivity() {
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        toolbar.setNavigationOnClickListener {
-            startActivity(Intent(this, BoatDetailsActivity::class.java))
-            finish()
-        }
+        toolbar.setNavigationOnClickListener { onBackPressed() }
 
         db = FirebaseFirestore.getInstance()
 
-        val boatId = findViewById<TextInputEditText>(R.id.boatid)
-        val departureDate = findViewById<EditText>(R.id.departureDate)
-        val departureTime = findViewById<EditText>(R.id.departureTime)
-        val arrivalDate = findViewById<EditText>(R.id.arrivalDate)
-        val arrivalTime = findViewById<EditText>(R.id.arrivalTime)
-        val numFishermen = findViewById<EditText>(R.id.numFishermen)
-        spinner = findViewById(R.id.fishermenSpinner)
-        val registerBtn = findViewById<Button>(R.id.Register)
-
-
-        loadFishermenForUser(nicOfLoggedInUser)
-
-        // Date Pickers
-        val dateListener = { editText: EditText ->
-            val c = Calendar.getInstance()
-            DatePickerDialog(this, { _, year, month, day ->
-                editText.setText("$day/${month + 1}/$year")
-            }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show()
+        userNIC = intent.getStringExtra("user_nic")
+        if (userNIC == null) {
+            val sharedPref = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+            userNIC = sharedPref.getString("user_nic", null)
         }
 
-        departureDate.setOnClickListener { dateListener(departureDate) }
-        arrivalDate.setOnClickListener { dateListener(arrivalDate) }
+        val boatIdField = findViewById<TextInputEditText>(R.id.boatid)
+        val depDateField = findViewById<EditText>(R.id.departureDate)
+        val depTimeField = findViewById<EditText>(R.id.departureTime)
+        val arrDateField = findViewById<EditText>(R.id.arrivalDate)
+        val arrTimeField = findViewById<EditText>(R.id.arrivalTime)
+        val numFishermenField = findViewById<EditText>(R.id.numFishermen)
+        val registerButton = findViewById<Button>(R.id.Register)
 
+        fishermenMultiSelect = findViewById(R.id.fishermenMultiSelect)
+        selectedFishermenNames = mutableListOf()
 
-        val timeListener = { editText: EditText ->
-            val c = Calendar.getInstance()
-            TimePickerDialog(this, { _, hour, minute ->
-                editText.setText(String.format("%02d:%02d", hour, minute))
-            }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true).show()
+        // Load fishermen under this userNIC
+        loadFishermenNames()
+
+        fishermenMultiSelect.setOnClickListener {
+            showFishermanMultiSelectDialog()
         }
 
-        departureTime.setOnClickListener { timeListener(departureTime) }
-        arrivalTime.setOnClickListener { timeListener(arrivalTime) }
+        depDateField.setOnClickListener { showDatePicker(depDateField) }
+        arrDateField.setOnClickListener { showDatePicker(arrDateField) }
+        depTimeField.setOnClickListener { showTimePicker(depTimeField) }
+        arrTimeField.setOnClickListener { showTimePicker(arrTimeField) }
 
-
-        registerBtn.setOnClickListener {
-            val boatIdValue = boatId.text.toString().trim()
-            val depDateValue = departureDate.text.toString().trim()
-            val depTimeValue = departureTime.text.toString().trim()
-            val arrDateValue = arrivalDate.text.toString().trim()
-            val arrTimeValue = arrivalTime.text.toString().trim()
-            val numFishermenValue = numFishermen.text.toString().trim()
-            val selectedFisherman = spinner.selectedItem?.toString() ?: "Unknown"
-
-            if (boatIdValue.isEmpty() || depDateValue.isEmpty() || depTimeValue.isEmpty()) {
-                Toast.makeText(this, "Please fill all required fields", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            val departureData = hashMapOf(
-                "boatId" to boatIdValue,
-                "departureDate" to depDateValue,
-                "departureTime" to depTimeValue,
-                "arrivalDate" to arrDateValue,
-                "arrivalTime" to arrTimeValue,
-                "numberOfFishermen" to numFishermenValue,
-                "fisherman" to selectedFisherman,
-                "status" to "Active",
-                "timestamp" to System.currentTimeMillis()
+        registerButton.setOnClickListener {
+            registerDeparture(
+                boatIdField.text.toString(),
+                depDateField.text.toString(),
+                depTimeField.text.toString(),
+                arrDateField.text.toString(),
+                arrTimeField.text.toString(),
+                numFishermenField.text.toString()
             )
-
-            db.collection("departures")
-                .add(departureData)
-                .addOnSuccessListener {
-                    Toast.makeText(this, "Departure added successfully!", Toast.LENGTH_SHORT).show()
-                    clearFields()
-                }
-                .addOnFailureListener { e ->
-                    Toast.makeText(this, "Failed: ${e.message}", Toast.LENGTH_LONG).show()
-                }
         }
     }
 
-    private fun loadFishermenForUser(nic: String) {
-        db.collection("fishermen")
-            .whereEqualTo("nic", nic)
-            .get()
-            .addOnSuccessListener { result ->
-                fishermenList.clear()
-                for (document in result) {
-                    val name = document.getString("name")
-                    if (name != null) {
-                        fishermenList.add(name)
+    private fun loadFishermenNames() {
+        userNIC?.let { nic ->
+            db.collection("fishermen")
+                .whereEqualTo("userNIC", nic)
+                .get()
+                .addOnSuccessListener { documents ->
+                    fishermenNames.clear()
+                    for (document in documents) {
+                        val name = document.getString("name")
+                        name?.let { fishermenNames.add(it) }
                     }
                 }
-
-                if (fishermenList.isEmpty()) {
-                    fishermenList.add("No fishermen found")
+                .addOnFailureListener {
+                    Toast.makeText(this, "Failed to load fishermen", Toast.LENGTH_SHORT).show()
                 }
-
-                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, fishermenList)
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                spinner.adapter = adapter
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Error loading fishermen: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
+        }
     }
 
-    private fun clearFields() {
-        findViewById<TextInputEditText>(R.id.boatid).text?.clear()
-        findViewById<EditText>(R.id.departureDate).text.clear()
-        findViewById<EditText>(R.id.departureTime).text.clear()
-        findViewById<EditText>(R.id.arrivalDate).text.clear()
-        findViewById<EditText>(R.id.arrivalTime).text.clear()
-        findViewById<EditText>(R.id.numFishermen).text.clear()
+    private fun showFishermanMultiSelectDialog() {
+        if (fishermenNames.isEmpty()) {
+            Toast.makeText(this, "No fishermen found", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val selectedItems = BooleanArray(fishermenNames.size) { false }
+
+        AlertDialog.Builder(this)
+            .setTitle("Select Fishermen")
+            .setMultiChoiceItems(fishermenNames.toTypedArray(), selectedItems) { _, which, isChecked ->
+                val name = fishermenNames[which]
+                if (isChecked) {
+                    if (!selectedFishermenNames.contains(name)) selectedFishermenNames.add(name)
+                } else {
+                    selectedFishermenNames.remove(name)
+                }
+            }
+            .setPositiveButton("Done") { _, _ ->
+                fishermenMultiSelect.text = selectedFishermenNames.joinToString(", ")
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun showDatePicker(editText: EditText) {
+        val cal = Calendar.getInstance()
+        DatePickerDialog(
+            this, { _, year, month, day ->
+                editText.setText("$day/${month + 1}/$year")
+            }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)
+        ).show()
+    }
+
+    private fun showTimePicker(editText: EditText) {
+        val cal = Calendar.getInstance()
+        TimePickerDialog(
+            this, { _, hour, minute ->
+                editText.setText(String.format("%02d:%02d", hour, minute))
+            }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true
+        ).show()
+    }
+
+    private fun registerDeparture(
+        boatId: String, depDate: String, depTime: String, arrDate: String,
+        arrTime: String, numFishermen: String
+    ) {
+        if (boatId.isEmpty() || depDate.isEmpty()) {
+            Toast.makeText(this, "Please fill required fields!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val departureData = hashMapOf(
+            "boatId" to boatId,
+            "departureDate" to depDate,
+            "departureTime" to depTime,
+            "arrivalDate" to arrDate,
+            "arrivalTime" to arrTime,
+            "numberOfFishermen" to numFishermen,
+            "selectedFishermen" to selectedFishermenNames
+        )
+
+        db.collection("departures")
+            .add(departureData)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Departure registered!", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed: ${it.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 }

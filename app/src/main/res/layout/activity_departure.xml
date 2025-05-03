@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_image"
     android:orientation="vertical"
-    tools:context=".FishermenRegisterActivity">
-
+    tools:context=".FishermanRegistrationActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -23,9 +22,8 @@
             app:title="Add Departures"
             app:titleTextColor="@android:color/black"
             app:navigationIcon="@drawable/arrow_back"
-            app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light"/>
+            app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />
     </com.google.android.material.appbar.AppBarLayout>
-
 
     <ScrollView
         android:layout_width="match_parent"
@@ -39,14 +37,14 @@
             android:padding="30dp"
             android:gravity="center_horizontal">
 
-
+            <!-- Boat ID -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
                 app:boxBackgroundMode="filled"
                 app:boxBackgroundColor="@android:color/white"
                 app:boxStrokeColor="@android:color/darker_gray"
-                android:layout_marginTop="15dp"
                 app:boxCornerRadiusTopStart="30dp"
                 app:boxCornerRadiusTopEnd="30dp"
                 app:boxCornerRadiusBottomStart="30dp"
@@ -63,40 +61,42 @@
                     android:padding="12dp"
                     android:textColor="@android:color/black"
                     android:textColorHint="@color/black"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
+            <!-- Multi-select Fishermen -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
                 app:boxBackgroundMode="filled"
                 app:boxBackgroundColor="@android:color/white"
                 app:boxStrokeColor="@android:color/darker_gray"
-                android:layout_marginTop="15dp"
                 app:boxCornerRadiusTopStart="30dp"
                 app:boxCornerRadiusTopEnd="30dp"
                 app:boxCornerRadiusBottomStart="30dp"
                 app:boxCornerRadiusBottomEnd="30dp"
-                app:hintTextColor="@color/black"
-                app:endIconMode="clear_text">
+                app:hintTextColor="@color/black">
 
-                <Spinner
-                    android:id="@+id/fishermenSpinner"
+                <TextView
+                    android:id="@+id/fishermenMultiSelect"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Select Fisherman"
-                    android:padding="12dp"/>
+                    android:hint="Select Fishermen"
+                    android:padding="12dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:background="@android:color/transparent" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
+            <!-- Departure Date -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
                 app:boxBackgroundMode="filled"
                 app:boxBackgroundColor="@android:color/white"
                 app:boxStrokeColor="@android:color/darker_gray"
-                android:layout_marginTop="15dp"
                 app:boxCornerRadiusTopStart="30dp"
                 app:boxCornerRadiusTopEnd="30dp"
                 app:boxCornerRadiusBottomStart="30dp"
@@ -113,17 +113,17 @@
                     android:inputType="date"
                     android:padding="12dp"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
+            <!-- Departure Time -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
                 app:boxBackgroundMode="filled"
                 app:boxBackgroundColor="@android:color/white"
                 app:boxStrokeColor="@android:color/darker_gray"
-                android:layout_marginTop="15dp"
                 app:boxCornerRadiusTopStart="30dp"
                 app:boxCornerRadiusTopEnd="30dp"
                 app:boxCornerRadiusBottomStart="30dp"
@@ -140,16 +140,17 @@
                     android:inputType="time"
                     android:padding="12dp"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Arrival Date -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
                 app:boxBackgroundMode="filled"
                 app:boxBackgroundColor="@android:color/white"
                 app:boxStrokeColor="@android:color/darker_gray"
-                android:layout_marginTop="15dp"
                 app:boxCornerRadiusTopStart="30dp"
                 app:boxCornerRadiusTopEnd="30dp"
                 app:boxCornerRadiusBottomStart="30dp"
@@ -166,17 +167,17 @@
                     android:inputType="date"
                     android:padding="12dp"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
+            <!-- Arrival Time -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
                 app:boxBackgroundMode="filled"
                 app:boxBackgroundColor="@android:color/white"
                 app:boxStrokeColor="@android:color/darker_gray"
-                android:layout_marginTop="15dp"
                 app:boxCornerRadiusTopStart="30dp"
                 app:boxCornerRadiusTopEnd="30dp"
                 app:boxCornerRadiusBottomStart="30dp"
@@ -193,17 +194,17 @@
                     android:inputType="time"
                     android:padding="12dp"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
+            <!-- Number of Fishermen -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
                 app:boxBackgroundMode="filled"
                 app:boxBackgroundColor="@android:color/white"
                 app:boxStrokeColor="@android:color/darker_gray"
-                android:layout_marginTop="15dp"
                 app:boxCornerRadiusTopStart="30dp"
                 app:boxCornerRadiusTopEnd="30dp"
                 app:boxCornerRadiusBottomStart="30dp"
@@ -218,12 +219,10 @@
                     android:inputType="number"
                     android:padding="12dp"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
-
-
+            <!-- Add Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/Register"
                 android:layout_width="150dp"
@@ -236,7 +235,7 @@
                 android:padding="12dp"
                 android:layout_marginTop="10dp"
                 android:gravity="center"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center" />
 
         </LinearLayout>
     </ScrollView>
