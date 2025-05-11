@@ -31,6 +31,11 @@ class DashboardActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        val Weatherbtn: Button = findViewById(R.id.Weatherdata)
+        Weatherbtn.setOnClickListener{
+            val intent = Intent(this, WeatherActivity::class.java)
+            startActivity(intent)
+        }
 
         val boatButton: Button = findViewById(R.id.boatregister)
         boatButton.setOnClickListener {
