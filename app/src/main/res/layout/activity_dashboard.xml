@@ -72,6 +72,24 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
                 app:cardCornerRadius="20dp"
+                app:cardBackgroundColor="@android:color/darker_gray">
+
+                <Button
+                    android:id="@+id/Weatherdata"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:backgroundTint="@android:color/holo_blue_light"
+                    android:text="Weather Data"
+                    android:textColor="@android:color/white"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                app:cardCornerRadius="20dp"
                 app:cardBackgroundColor="@android:color/transparent">
 
                 <Button
