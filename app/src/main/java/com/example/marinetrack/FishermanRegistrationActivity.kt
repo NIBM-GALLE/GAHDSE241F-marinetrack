@@ -54,7 +54,7 @@ class FishermanRegistrationActivity : AppCompatActivity() {
         val contactEditText: EditText = findViewById(R.id.editTextTextContactNumber)
         val emailEditText: EditText = findViewById(R.id.editTextTextEmail)
         val addressEditText: EditText = findViewById(R.id.address)
-        val boatIdEditText: EditText = findViewById(R.id.boatid)
+        val yearEditText: EditText = findViewById(R.id.years)
 
         ownernicEditText.setText(userNic)
         emailEditText.setText(userEmail)
@@ -79,15 +79,16 @@ class FishermanRegistrationActivity : AppCompatActivity() {
 
         registerButton.setOnClickListener {
             val name = nameEditText.text.toString().trim()
+            val ownernic = ownernicEditText.text.toString().trim()
             val nic = nicEditText.text.toString().trim()
             val contact = contactEditText.text.toString().trim()
             val email = emailEditText.text.toString().trim()
             val address = addressEditText.text.toString().trim()
-            val boatId = boatIdEditText.text.toString().trim()
+            val years = yearEditText.text.toString().trim()
 
             if (imageUri == null || documentUri == null ||
                 name.isEmpty() || nic.isEmpty() || contact.isEmpty() || email.isEmpty() ||
-                address.isEmpty() || boatId.isEmpty()
+                address.isEmpty() || years.isEmpty()
             ) {
                 Toast.makeText(this, "Please fill all fields and select both an image and a document", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -107,11 +108,12 @@ class FishermanRegistrationActivity : AppCompatActivity() {
                                 documentRef.downloadUrl.addOnSuccessListener { documentUrl ->
                                     val fisherman = hashMapOf(
                                         "fishermenName" to name,
+                                        "ownerNIC" to ownernic,
                                         "fishermenNIC" to nic,
                                         "contact" to contact,
                                         "email" to email,
                                         "address" to address,
-                                        "boatId" to boatId,
+                                        "experience" to years,
                                         "imageUrl" to imageUrl.toString(),
                                         "documentUrl" to documentUrl.toString()
                                     )
