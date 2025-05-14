@@ -8,7 +8,11 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 
+
+
 class BoatDetailsActivity : AppCompatActivity() {
+    private var userNIC: String? = null
+    private var boatId: String? = null //
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_boatdetails)
@@ -23,15 +27,29 @@ class BoatDetailsActivity : AppCompatActivity() {
             finish()
         }
 
+        userNIC = intent.getStringExtra("user_nic")
+        boatId = intent.getStringExtra("boatId")
+
+        // Option 2: Get NIC from SharedPreferences as fallback
+        if (userNIC == null) {
+            val sharedPref = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+            userNIC = sharedPref.getString("user_nic", null)
+        }
+
+
+
         val addButton: Button = findViewById(R.id.adddeparture)
         addButton.setOnClickListener {
             val intent = Intent(this, DepartureActivity::class.java)
+            intent.putExtra("id", boatId)
             startActivity(intent)
+
         }
 
         val viewButton: Button = findViewById(R.id.viewdepartures)
         viewButton.setOnClickListener {
             val intent = Intent(this, ViewDepartureActivity::class.java)
+            intent.putExtra("id", boatId)
             startActivity(intent)
         }
     }

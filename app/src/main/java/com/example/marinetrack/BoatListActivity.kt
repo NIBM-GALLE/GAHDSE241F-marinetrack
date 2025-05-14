@@ -64,7 +64,7 @@ class BoatListActivity : AppCompatActivity() {
             .addOnSuccessListener { documents ->
                 boatList.clear()
                 for (document in documents) {
-                    val id = document.getString("boatId") ?: ""
+                    val id = document.getString("registrationId") ?: ""
                     val name = document.getString("boatName") ?: ""
                     val capacity = document.getString("capacity") ?: ""
                     val status = document.getString("status") ?: ""
