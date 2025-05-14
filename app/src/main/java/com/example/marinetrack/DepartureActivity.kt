@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.firestore.FirebaseFirestore
+import java.text.SimpleDateFormat
 import java.util.*
 
 class DepartureActivity : AppCompatActivity() {
@@ -17,7 +18,9 @@ class DepartureActivity : AppCompatActivity() {
     private var userNIC: String? = null
     private lateinit var fishermenMultiSelect: TextView
     private lateinit var selectedFishermenNames: MutableList<String>
+    private lateinit var selectedFishermenNICs: MutableList<String>
     private var fishermenNames: MutableList<String> = mutableListOf()
+    private var fishermenMap: MutableMap<String, String> = mutableMapOf() // name -> NIC
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,10 +46,15 @@ class DepartureActivity : AppCompatActivity() {
         val numFishermenField = findViewById<EditText>(R.id.numFishermen)
         val registerButton = findViewById<Button>(R.id.Register)
 
+        val passedBoatId = intent.getStringExtra("id")
+        passedBoatId?.let {
+            boatIdField.setText(it)
+        }
+
         fishermenMultiSelect = findViewById(R.id.fishermenMultiSelect)
         selectedFishermenNames = mutableListOf()
+        selectedFishermenNICs = mutableListOf()
 
-        // Load fishermen under this userNIC
         loadFishermenNames()
 
         fishermenMultiSelect.setOnClickListener {
@@ -59,27 +67,52 @@ class DepartureActivity : AppCompatActivity() {
         arrTimeField.setOnClickListener { showTimePicker(arrTimeField) }
 
         registerButton.setOnClickListener {
-            registerDeparture(
-                boatIdField.text.toString(),
-                depDateField.text.toString(),
-                depTimeField.text.toString(),
-                arrDateField.text.toString(),
-                arrTimeField.text.toString(),
-                numFishermenField.text.toString()
-            )
+            val boatId = boatIdField.text.toString()
+            val depDate = depDateField.text.toString()
+            val depTime = depTimeField.text.toString()
+            val arrDate = arrDateField.text.toString()
+            val arrTime = arrTimeField.text.toString()
+            val numFishermen = numFishermenField.text.toString()
+
+            if (boatId.isEmpty() || depDate.isEmpty()) {
+                Toast.makeText(this, "Please fill required fields!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            checkFishermanAvailability(
+                selectedFishermenNICs,
+                depDate,
+                depTime,
+                arrDate,
+                arrTime
+            ) {
+                saveDeparture(
+                    boatId,
+                    depDate,
+                    depTime,
+                    arrDate,
+                    arrTime,
+                    numFishermen
+                )
+            }
         }
     }
 
     private fun loadFishermenNames() {
         userNIC?.let { nic ->
             db.collection("fishermen")
-                .whereEqualTo("userNIC", nic)
+                .whereEqualTo("ownerNIC", nic)
                 .get()
                 .addOnSuccessListener { documents ->
                     fishermenNames.clear()
+                    fishermenMap.clear()
                     for (document in documents) {
-                        val name = document.getString("name")
-                        name?.let { fishermenNames.add(it) }
+                        val name = document.getString("fishermenName")
+                        val nic = document.getString("fishermenNIC")
+                        if (name != null && nic != null) {
+                            fishermenNames.add(name)
+                            fishermenMap[name] = nic
+                        }
                     }
                 }
                 .addOnFailureListener {
@@ -100,10 +133,15 @@ class DepartureActivity : AppCompatActivity() {
             .setTitle("Select Fishermen")
             .setMultiChoiceItems(fishermenNames.toTypedArray(), selectedItems) { _, which, isChecked ->
                 val name = fishermenNames[which]
+                val nic = fishermenMap[name]
                 if (isChecked) {
-                    if (!selectedFishermenNames.contains(name)) selectedFishermenNames.add(name)
+                    if (!selectedFishermenNames.contains(name)) {
+                        selectedFishermenNames.add(name)
+                        nic?.let { selectedFishermenNICs.add(it) }
+                    }
                 } else {
                     selectedFishermenNames.remove(name)
+                    nic?.let { selectedFishermenNICs.remove(it) }
                 }
             }
             .setPositiveButton("Done") { _, _ ->
@@ -131,15 +169,68 @@ class DepartureActivity : AppCompatActivity() {
         ).show()
     }
 
-    private fun registerDeparture(
-        boatId: String, depDate: String, depTime: String, arrDate: String,
-        arrTime: String, numFishermen: String
+    private fun checkFishermanAvailability(
+        selectedNICs: List<String>,
+        depDate: String,
+        depTime: String,
+        arrDate: String,
+        arrTime: String,
+        onSuccess: () -> Unit
     ) {
-        if (boatId.isEmpty() || depDate.isEmpty()) {
-            Toast.makeText(this, "Please fill required fields!", Toast.LENGTH_SHORT).show()
-            return
-        }
+        db.collection("departures")
+            .whereArrayContainsAny("selectedFishermen", selectedNICs)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (doc in documents) {
+                    val existingDepDate = doc.getString("departureDate") ?: continue
+                    val existingDepTime = doc.getString("departureTime") ?: continue
+                    val existingArrDate = doc.getString("arrivalDate") ?: continue
+                    val existingArrTime = doc.getString("arrivalTime") ?: continue
 
+                    if (datesOverlap(
+                            depDate, depTime, arrDate, arrTime,
+                            existingDepDate, existingDepTime, existingArrDate, existingArrTime
+                        )
+                    ) {
+                        Toast.makeText(
+                            this,
+                            "Some fishermen are already assigned to another boat in this period!",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        return@addOnSuccessListener
+                    }
+                }
+                onSuccess() // No conflicts found
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to check availability", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun datesOverlap(
+        start1Date: String, start1Time: String,
+        end1Date: String, end1Time: String,
+        start2Date: String, start2Time: String,
+        end2Date: String, end2Time: String
+    ): Boolean {
+        return try {
+            val format = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+            val start1 = format.parse("$start1Date $start1Time")
+            val end1 = format.parse("$end1Date $end1Time")
+            val start2 = format.parse("$start2Date $start2Time")
+            val end2 = format.parse("$end2Date $end2Time")
+
+            start1 != null && end1 != null && start2 != null && end2 != null &&
+                    start1.before(end2) && start2.before(end1)
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun saveDeparture(
+        boatId: String, depDate: String, depTime: String,
+        arrDate: String, arrTime: String, numFishermen: String
+    ) {
         val departureData = hashMapOf(
             "boatId" to boatId,
             "departureDate" to depDate,
@@ -147,7 +238,7 @@ class DepartureActivity : AppCompatActivity() {
             "arrivalDate" to arrDate,
             "arrivalTime" to arrTime,
             "numberOfFishermen" to numFishermen,
-            "selectedFishermen" to selectedFishermenNames
+            "selectedFishermen" to selectedFishermenNICs
         )
 
         db.collection("departures")
