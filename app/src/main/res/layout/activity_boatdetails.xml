@@ -41,23 +41,7 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                app:cardCornerRadius="20dp"
-                app:cardBackgroundColor="@android:color/transparent">
 
-                <Button
-                    android:id="@+id/adddeparture"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:backgroundTint="#B3800F"
-                    android:text="Add Departures"
-                    android:textColor="@android:color/white"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-            </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
