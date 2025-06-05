@@ -24,6 +24,7 @@ class BoatAdapter(private val boatList: List<Boat>) :
             tvBoatName.text = "Name: ${boat.boatName}"
             tvBoatCapacity.text = "Capacity: ${boat.capacity} People"
             tvBoatStatus.text = "Status: ${boat.status}"
+            validdate.text = "Registered On: ${boat.date}" // ✅ Show the date
 
             btnViewDetails.setOnClickListener {
                 val context = holder.itemView.context

@@ -8,6 +8,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.marinetrack.databinding.ActivityBoatlistBinding
 import com.google.firebase.firestore.FirebaseFirestore
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class BoatListActivity : AppCompatActivity() {
 
@@ -59,7 +61,7 @@ class BoatListActivity : AppCompatActivity() {
 
     private fun fetchBoatsForUser(nic: String) {
         firestore.collection("boat")
-            .whereEqualTo("nic", userNIC)  // Ensure your Firestore boat data uses 'owner_nic'
+            .whereEqualTo("nic", userNIC)
             .get()
             .addOnSuccessListener { documents ->
                 boatList.clear()
@@ -69,7 +71,16 @@ class BoatListActivity : AppCompatActivity() {
                     val capacity = document.getString("capacity") ?: ""
                     val status = document.getString("status") ?: ""
 
-                    val boat = Boat(id, name, capacity, status)
+                    // Get createdAt timestamp (if exists)
+                    val timestamp = document.getTimestamp("createdAt")
+                    val formattedDate = if (timestamp != null) {
+                        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                        sdf.format(timestamp.toDate())
+                    } else {
+                        "2025-05-30"
+                    }
+
+                    val boat = Boat(id, name, capacity, status, formattedDate)
                     boatList.add(boat)
                 }
                 boatAdapter.notifyDataSetChanged()
@@ -78,4 +89,5 @@ class BoatListActivity : AppCompatActivity() {
                 Toast.makeText(this, "Failed to fetch boats: ${exception.message}", Toast.LENGTH_LONG).show()
             }
     }
+
 }

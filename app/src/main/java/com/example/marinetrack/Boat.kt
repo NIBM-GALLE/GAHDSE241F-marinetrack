@@ -1,9 +1,10 @@
 package com.example.marinetrack
 
-data class Boat(
+ class Boat(
     val boatId: String,
     val boatName: String,
     val capacity: String,
-    val status: String
+    val status: String,
+    val date:String
 )
 
