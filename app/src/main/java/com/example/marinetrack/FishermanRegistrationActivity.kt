@@ -94,6 +94,11 @@ class FishermanRegistrationActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            if (!email.contains("@")) {
+                Toast.makeText(this, "Invalid email: ", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             registerButton.isEnabled = false
             progressDialog.show()
 
