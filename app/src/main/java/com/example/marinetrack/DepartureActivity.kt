@@ -7,8 +7,12 @@ import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.android.volley.Request
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.firestore.FirebaseFirestore
+import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -86,13 +90,8 @@ class DepartureActivity : AppCompatActivity() {
                 arrDate,
                 arrTime
             ) {
-                saveDeparture(
-                    boatId,
-                    depDate,
-                    depTime,
-                    arrDate,
-                    arrTime,
-                    numFishermen
+                fetchEmailsAndRegisterDeparture(
+                    boatId, depDate, depTime, arrDate, arrTime, numFishermen
                 )
             }
         }
@@ -200,7 +199,7 @@ class DepartureActivity : AppCompatActivity() {
                         return@addOnSuccessListener
                     }
                 }
-                onSuccess() // No conflicts found
+                onSuccess()
             }
             .addOnFailureListener {
                 Toast.makeText(this, "Failed to check availability", Toast.LENGTH_SHORT).show()
@@ -227,9 +226,30 @@ class DepartureActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveDeparture(
+    private fun fetchEmailsAndRegisterDeparture(
         boatId: String, depDate: String, depTime: String,
         arrDate: String, arrTime: String, numFishermen: String
+    ) {
+        db.collection("fishermen")
+            .whereIn("fishermenNIC", selectedFishermenNICs)
+            .get()
+            .addOnSuccessListener { documents ->
+                val emails = documents.mapNotNull { it.getString("email") }
+
+                saveDeparture(
+                    boatId, depDate, depTime, arrDate, arrTime,
+                    numFishermen, emails
+                )
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to fetch emails", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun saveDeparture(
+        boatId: String, depDate: String, depTime: String,
+        arrDate: String, arrTime: String, numFishermen: String,
+        fishermenEmails: List<String>
     ) {
         val departureData = hashMapOf(
             "boatId" to boatId,
@@ -245,9 +265,130 @@ class DepartureActivity : AppCompatActivity() {
             .add(departureData)
             .addOnSuccessListener {
                 Toast.makeText(this, "Departure registered!", Toast.LENGTH_SHORT).show()
+                sendEmailsUsingEmailJS(fishermenEmails, boatId, depDate, depTime)
             }
             .addOnFailureListener {
                 Toast.makeText(this, "Failed: ${it.message}", Toast.LENGTH_SHORT).show()
             }
     }
+
+
+    /*private fun sendEmailsUsingEmailJS(emails: List<String>, boatId: String, depDate: String, depTime: String) {
+        val queue = Volley.newRequestQueue(this)
+
+        emails.forEach { email ->
+            val json = JSONObject().apply {
+                put("service_id", "service_sop8arb") // Replace with your EmailJS service ID
+                put("template_id", "template_acpae7r") // Replace with your EmailJS template ID
+                put("user_id", "OGOVI1pv0OlKwpHSQ") // Replace with your EmailJS public key
+                put("template_params", JSONObject().apply {
+                    put("to_email", email)
+                    put("boat_id", boatId)
+                    put("departure_date", depDate)
+                    put("departure_time", depTime)
+                    // Add any other template variables your EmailJS template expects
+                    put("message", "Your boat departure has been scheduled.")
+                })
+            }
+
+            val request = object : JsonObjectRequest(
+                Method.POST,
+                "https://api.emailjs.com/api/v1.0/email/send",
+                json,
+                { response ->
+                    Toast.makeText(this, "Email sent successfully to $email", Toast.LENGTH_SHORT).show()
+                },
+                { error ->
+                    val errorMessage = when {
+                        error.networkResponse != null -> {
+                            val statusCode = error.networkResponse.statusCode
+                            val errorBody = String(error.networkResponse.data)
+                            "Failed to send email to $email (Status: $statusCode): $errorBody"
+                        }
+                        else -> "Network error sending email to $email: ${error.message}"
+                    }
+                    Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+                    error.printStackTrace()
+                }
+            ) {
+                override fun getHeaders(): MutableMap<String, String> {
+                    return mutableMapOf(
+                        "Content-Type" to "application/json"
+                    )
+                }
+            }
+
+            queue.add(request)
+        }
+    }*/
+
+
+    private fun sendEmailsUsingEmailJS(emails: List<String>, boatId: String, depDate: String, depTime: String) {
+        val queue = Volley.newRequestQueue(this)
+
+        // Validate EmailJS credentials first
+        val serviceId = "service_sop8arb"
+        val templateId = "template_acpae7r"
+        val publicKey = "OGOVI1pv0OlKwpHSQ"
+
+        if (serviceId.startsWith("YOUR_") || templateId.startsWith("YOUR_") || publicKey.startsWith("YOUR_")) {
+            Toast.makeText(this, "Please configure EmailJS credentials", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        emails.forEach { email ->
+            val json = JSONObject().apply {
+                put("service_id", serviceId)
+                put("template_id", templateId)
+                put("user_id", publicKey)
+                put("template_params", JSONObject().apply {
+                    put("to_email", email)
+                    put("boat_id", boatId)
+                    put("departure_date", depDate)
+                    put("departure_time", depTime)
+                    put("message", "Your fishing trip departure has been scheduled for $depDate at $depTime. Boat ID: $boatId")
+                })
+            }
+
+            val request = object : JsonObjectRequest(
+                Method.POST,
+                "https://api.emailjs.com/api/v1.0/email/send",
+                json,
+                { response ->
+                    Toast.makeText(this, "Email sent to $email", Toast.LENGTH_SHORT).show()
+                },
+                { error ->
+                    handleEmailError(error, email)
+                }
+            ) {
+                override fun getHeaders(): MutableMap<String, String> {
+                    return mutableMapOf(
+                        "Content-Type" to "application/json"
+                    )
+                }
+            }
+
+            queue.add(request)
+        }
+    }
+
+    private fun handleEmailError(error: com.android.volley.VolleyError, email: String) {
+        val errorMessage = when {
+            error.networkResponse != null -> {
+                when (error.networkResponse.statusCode) {
+                    400 -> "Bad request - check EmailJS configuration"
+                    401 -> "Unauthorized - check your EmailJS public key"
+                    402 -> "EmailJS quota exceeded"
+                    404 -> "Service or template not found"
+                    422 -> "Invalid template parameters"
+                    else -> "Server error (${error.networkResponse.statusCode})"
+                }
+            }
+            else -> "Network connection error"
+        }
+
+        Toast.makeText(this, " send email to $email: $errorMessage", Toast.LENGTH_LONG).show()
+        error.printStackTrace()
+    }
+
 }

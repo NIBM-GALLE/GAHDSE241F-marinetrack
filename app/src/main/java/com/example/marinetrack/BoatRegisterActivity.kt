@@ -133,7 +133,8 @@ class BoatRegisterActivity : AppCompatActivity() {
                                         "power" to power,
                                         "capacity" to capacity,
                                         "imageUrl" to imageUrl.toString(),
-                                        "documentUrl" to documentUrl.toString()
+                                        "documentUrl" to documentUrl.toString(),
+                                        "createdAt" to com.google.firebase.firestore.FieldValue.serverTimestamp()
                                     )
 
                                     db.collection("boat")
