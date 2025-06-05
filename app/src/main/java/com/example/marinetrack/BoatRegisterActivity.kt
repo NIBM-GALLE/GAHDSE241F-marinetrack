@@ -107,6 +107,10 @@ class BoatRegisterActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please fill all fields and select both an image and a document", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+            if (contact.length != 10 || !contact.all { it.isDigit() }) {
+                Toast.makeText(this, "Contact number must be exactly 10 digits", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
             registerButton.isEnabled = false
             progressDialog.show()
