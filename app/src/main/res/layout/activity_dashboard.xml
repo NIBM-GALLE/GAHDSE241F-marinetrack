@@ -111,15 +111,7 @@
                 app:cardElevation="10dp"
                 app:cardBackgroundColor="@android:color/transparent">
 
-                <Button
-                    android:id="@+id/licence"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:backgroundTint="#B3800F"
-                    android:text="Licence Renewal"
-                    android:textColor="@android:color/white"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView

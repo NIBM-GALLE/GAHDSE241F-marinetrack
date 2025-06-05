@@ -41,6 +41,7 @@
         <activity android:name=".BoatDetailsActivity" ></activity>
         <activity android:name=".DepartureActivity" ></activity>
         <activity android:name=".ViewDepartureActivity" ></activity>
+        <activity android:name=".WeatherActivity" ></activity>
 
 
     </application>

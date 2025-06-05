@@ -39,13 +39,13 @@ class BoatDetailsActivity : AppCompatActivity() {
 
 
 
-        val addButton: Button = findViewById(R.id.adddeparture)
+        /*val addButton: Button = findViewById(R.id.adddeparture)
         addButton.setOnClickListener {
             val intent = Intent(this, DepartureActivity::class.java)
             intent.putExtra("id", boatId)
             startActivity(intent)
 
-        }
+        }*/
 
         val viewButton: Button = findViewById(R.id.viewdepartures)
         viewButton.setOnClickListener {
