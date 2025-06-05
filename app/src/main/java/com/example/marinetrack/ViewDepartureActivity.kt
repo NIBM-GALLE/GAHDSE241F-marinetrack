@@ -46,40 +46,30 @@ class ViewDepartureActivity : AppCompatActivity() {
 
     private fun fetchDeparturesForBoat(boatId: String) {
         db.collection("departures")
-            .whereEqualTo("boatId", boatId)
+            .whereEqualTo("boatRegistrationId", boatId)
             .get()
             .addOnSuccessListener { documents ->
                 departureList.clear()
 
                 for (doc in documents) {
-                    val departureDateStr = doc.getString("departureDate") ?: ""
-                    val arrivalDate = doc.getString("arrivalDate") ?: ""
-                    val fishermen = (doc.get("selectedFishermen") as? List<*>)?.joinToString(", ") ?: ""
+                    //val departureDateStr = doc.getString("boatName") ?: ""
+                    //val arrivalDate = doc.getString("destination") ?: ""
+                    val departureTimestamp = doc.getTimestamp("departureTimestamp")?.toDate()
+                    val estimatedReturnTimestamp = doc.getTimestamp("estimatedReturnTimestamp")?.toDate()
+
+                    val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+                    val departureStr = departureTimestamp?.let { dateFormat.format(it) } ?: ""
+                    val returnStr = estimatedReturnTimestamp?.let { dateFormat.format(it) } ?: ""
+
+                    val fishermen = (doc.get("fishermenNames") as? List<*>)?.joinToString(", ") ?: ""
 
                     // Determine status based on departureDate
-                    val status = if (departureDateStr.isEmpty()) {
-                        "Pending"
-                    } else {
-                        try {
-                            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                            val departureDate = sdf.parse(departureDateStr)
-                            val currentDate = sdf.parse(sdf.format(Date()))
-
-                            if (departureDate != null && departureDate.after(currentDate)) {
-                                "Pending"
-                            } else {
-                                "Active"
-                            }
-                        } catch (e: Exception) {
-                            Log.e("ViewDeparture", "Date parsing error", e)
-                            "Pending"
-                        }
-                    }
+                    val status = doc.getString("status") ?: ""
 
                     val departure = Departure(
                         boatId = boatId,
-                        departureDate = departureDateStr,
-                        arrivalDate = arrivalDate,
+                        departureDate = departureStr,
+                        arrivalDate = returnStr,
                         status = status,
                         fishermen = fishermen
                     )
