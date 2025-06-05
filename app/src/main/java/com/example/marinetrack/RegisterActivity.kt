@@ -47,6 +47,18 @@ class RegisterActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+            if (nic.length != 12 || !nic.all { it.isDigit() }) {
+                Toast.makeText(this, "NIC must be exactly 12 digits", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (contact.length != 10 || !contact.all { it.isDigit() }) {
+                Toast.makeText(this, "Contact number must be exactly 10 digits", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (!email.contains("@")) {
+                Toast.makeText(this, "Invalid email: ", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
             val user = hashMapOf(
                 "name" to name,
